@@ -1,4 +1,4 @@
-defmodule JsonParserTest do
+defmodule Utility.JsonParserTest do
   use ExUnit.Case
   doctest Utility.JsonParser
   import Utility.JsonParser
