@@ -3,7 +3,7 @@ defmodule JsonParserTest do
   doctest Utility.JsonParser
   import Utility.JsonParser
 
-  test "read json file, get data as a list or a map" do
+  test "read JSON file, get data as a list or a map" do
     data_as_list = [
       %{
         "_id" => 1,
@@ -34,10 +34,10 @@ defmodule JsonParserTest do
       }
     }
 
-    # read json, and get data as a list
+    # read JSON, and get data as a list
     assert parse_json("test/data/test.json") == {:ok, data_as_list}
 
-    # read json, and get data as a list
+    # read JSON, and get data as a list
     assert parse_json("test/data/test.json", "_id") == {:ok, data_as_map}
 
     # error

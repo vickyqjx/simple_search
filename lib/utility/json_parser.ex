@@ -4,13 +4,7 @@ defmodule Utility.JsonParser do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> ZendeskSearch.hello()
-      :world
-
+  Read a JSON file, convert it to a list
   """
   @spec parse_json(String.t()) :: {:ok, list} | {:error, String.t()}
   def parse_json(file_path) do
@@ -22,6 +16,9 @@ defmodule Utility.JsonParser do
     end
   end
 
+  @doc """
+  Read a JSON file, convert it to a map
+  """
   @spec parse_json(String.t(), String.t() | Integer) :: {:ok, map} | {:error, String.t()}
   def parse_json(file_path, key) do
     with {:ok, data_as_list} <- parse_json(file_path),
