@@ -1,0 +1,20 @@
+[
+  {
+    "_id": 1,
+    "name": "test_1",
+    "active": true,
+    "list": [
+      "test_list_1",
+      "test_list_2"
+    ]
+  },
+  {
+    "_id": 2,
+    "name": "test_2",
+    "active": false,
+    "list": [
+      "test_list_3",
+      "test_list_4"
+    ]
+  }
+]

@@ -1,6 +1,6 @@
-defmodule DataFormatter do
+defmodule Utility.DataFormatter do
   @moduledoc """
-  Documentation for DataFormatter.
+  Documentation for Utility.DataFormatter.
   """
 
   @doc """
@@ -13,9 +13,9 @@ defmodule DataFormatter do
 
   """
   @spec convert_list_to_map(list, String.t() | Integer) :: map
-  def convert_list_to_map(list_of_data, key) do
-    Enum.map(list_of_data, fn data ->
-      {data[key], data}
-    end)
+  def convert_list_to_map(data_as_list, key) do
+    data_as_list
+    |> Enum.map(fn row -> {row[key], row} end)
+    |> Map.new()
   end
 end
