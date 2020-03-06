@@ -17,7 +17,12 @@ defmodule SearchHelper.Search do
     results =
       data[resource_name]
       |> Enum.filter(fn item -> item_matches_query?(item[field_name], search_term) end)
-      |> Enum.map(fn item -> append_associated_data(item, data, resource_name) end)
+      |> Enum.map(fn item ->
+        item
+        |> append_associated_data(data, resource_name)
+        |> Enum.filter(fn {k, value} -> value !== nil && value !== [] end)
+        |> Enum.into(%{})
+      end)
 
     {:ok, results}
   end
@@ -43,8 +48,16 @@ defmodule SearchHelper.Search do
 
   defp append_associated_data(
          item,
-         %{"users" => users, "organizations" => organizations} = data,
+         data,
          "organizations"
+       ) do
+    item
+  end
+
+  defp append_associated_data(
+         item,
+         %{"users" => users, "organizations" => organizations} = data,
+         "tickets"
        ) do
     item
     |> Map.put("submitter", find_item_by_id(users, item["submitter_id"]))
@@ -52,13 +65,11 @@ defmodule SearchHelper.Search do
     |> Map.put("organization", find_item_by_id(organizations, item["organization_id"]))
   end
 
-  defp append_associated_data(item, data, "tickets") do
-    item
-  end
-
   defp append_associated_data(item, _data, _resource_name), do: item
 
   defp find_item_by_id(items, id) do
-    Enum.find(items, fn items -> items["_id"] === id end)
+    Enum.find(items, fn item ->
+      item["_id"] == id
+    end)
   end
 end
