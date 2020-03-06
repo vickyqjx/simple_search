@@ -1,3 +1,4 @@
 %{
+  "ex_prompt": {:hex, :ex_prompt, "0.1.5", "b136642d0962f8ea37b3c9fa185ad1f42c71c3b9c6c3950f0358d7f3d2db2970", [:mix], [], "hexpm"},
   "poison": {:hex, :poison, "4.0.1", "bcb755a16fac91cad79bfe9fc3585bb07b9331e50cfe3420a24bcc2d735709ae", [:mix], [], "hexpm"},
 }

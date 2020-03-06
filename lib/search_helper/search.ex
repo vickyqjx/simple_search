@@ -6,9 +6,10 @@ defmodule SearchHelper.Search do
   @doc """
   search data on field, return matched results
   """
-  @spec search_on_field(list, String.t(), String.t() | Integer | Boolean) :: list
-  def search_on_field(list, field_name, search_term, is_list \\ false) do
-    Enum.filter(list, fn item -> item_matches_query?(item[field_name], search_term) end)
+  @spec search_on_field(list, String.t(), String.t() | Integer | Boolean) :: {:ok, list}
+  def search_on_field(list, field_name, search_term) do
+    results = Enum.filter(list, fn item -> item_matches_query?(item[field_name], search_term) end)
+    {:ok, results}
   end
 
   defp item_matches_query?(nil, ""), do: true
