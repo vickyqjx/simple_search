@@ -27,6 +27,8 @@ defmodule ZendeskSearch do
 
   @no_results_message "\nNo matching results!"
 
+  @divider "\n---------------------------------------"
+
   def main(_argv) do
     IO.puts("#{@welcome_msg}\n#{@loading_msg}")
 
@@ -38,10 +40,14 @@ defmodule ZendeskSearch do
   end
 
   def user_input({users, tickets, organizations}, fields) do
+    IO.puts(@divider)
+
     resource_name =
       UserInput.get_options_input(@resources, @helper_msg_resources, @error_msg_invalid)
 
     select_fields_message = "#{@helper_msg_fields}[#{resource_name}]\s"
+
+    IO.puts(@divider)
 
     field_name =
       UserInput.get_options_input(
@@ -50,6 +56,7 @@ defmodule ZendeskSearch do
         @error_msg_invalid
       )
 
+    IO.puts(@divider)
     search_term = ExPrompt.string("#{@helper_msg_term}[#{field_name}]:")
 
     prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
@@ -59,7 +66,7 @@ defmodule ZendeskSearch do
       _ -> IO.puts(@error_msg_search_results)
     end
 
-    sure? = ExPrompt.confirm("\nContinue?")
+    sure? = ExPrompt.confirm("\n#{@divider}\n\nContinue?")
 
     if sure?, do: user_input({users, tickets, organizations}, fields), else: IO.puts("\nSee you!")
   end
