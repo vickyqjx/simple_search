@@ -1,6 +1,3 @@
-
-
-
 # Zendesk Search
 This is a zendesk search solution
 
@@ -9,36 +6,42 @@ This is a zendesk search solution
 - Erlang ~> 21
 - Elixir ~> 1.8
 
-### How to install Erlang
-Using Homebrew
-```
-brew install erlang
-```
-For other OS: [https://www.erlang.org/downloads](https://www.erlang.org/downloads)
+## How to run
 
-### How to install Elixir
-Using Homebrew
-```
-brew install elixir
-```
-For other OS: [https://elixir-lang.org/install.html](https://elixir-lang.org/install.html)
-## How to Run
+### Use Docker
 
-**Run under project directory**
+Use the official Elixir docker image. Install [Docker](https://www.docker.com/products/docker-desktop)
+
+Under project root, run the following
+
+```
+docker run -it -v $(pwd):/src -w="/src" elixir:1.8 bash
+```
+
+Inside the running container, you should be in the `/src` folder. Now you can follow below commands to build the project.
 
 Install dependencies:
-```
+
+```elixir
 mix deps.get
 ```
 
 Building our executable:
-```
+
+```elixir
 mix escript.build
 ```
 
 Start application:
-```
+
+```elixir
 ./zendesk_search
+```
+
+To run tests:
+
+```elixir
+mix test
 ```
 
 ### Example
@@ -53,8 +56,3 @@ Select which field to search on:
 Enter search term, and get results:
 
 ![Enter search term, and get results](https://github.com/vickyqjx/zendesk_search/blob/master/data/images/enter_term.png)
-## Test
-Run test:
-```elixir
-mix test
-```
