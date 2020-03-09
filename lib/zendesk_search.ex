@@ -9,9 +9,17 @@ defmodule ZendeskSearch do
   @tickets_file "data/tickets.json"
   @organizations_file "data/organizations.json"
 
+  @resources ["users", "organizations", "tickets"]
+
   @welcome_msg "*** Welcome to Zendesk Search! ***\n"
   @loading_msg "Please wait while your data is loading...\n"
   @start_msg "Ready! Please start your search."
+
+  @helper_msg_resources "Please select dataset from above to search"
+  @helper_msg_fields "Please select a field above"
+  @helper_msg_term "Please enter the search term:"
+
+  @error_msg_invalid "\n\nInvalid input! Please try again!"
 
   @error_msg_search_results "\nSearch error!"
 
@@ -26,9 +34,13 @@ defmodule ZendeskSearch do
   end
 
   def user_input({users, tickets, organizations}, fields) do
-    resource_name = UserInput.get_user_input(:resource_name)
-    field_name = UserInput.get_user_input(:field_name, fields[resource_name])
-    search_term = UserInput.get_user_input(:search_term)
+    resource_name =
+      UserInput.get_options_input(@resources, @helper_msg_resources, @error_msg_invalid)
+
+    field_name =
+      UserInput.get_options_input(fields[resource_name], @helper_msg_fields, @error_msg_invalid)
+
+    search_term = ExPrompt.string(@helper_msg_term)
 
     prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
 
