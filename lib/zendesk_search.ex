@@ -5,6 +5,7 @@ defmodule ZendeskSearch do
 
   alias SearchHelper.UserInput, as: UserInput
   alias SearchHelper.Search, as: Search
+  alias SearchHelper.Display, as: Display
 
   @users_file "data/users.json"
   @tickets_file "data/tickets.json"
@@ -89,14 +90,11 @@ defmodule ZendeskSearch do
   end
 
   def display_search_results(results, resource_name) do
-    IO.puts("\n*****#{length(results)} matching results*****")
-
-    Enum.map(results, fn data_set ->
-      Enum.map(data_set, fn {key, value} ->
-        IO.puts("#{key}:\s#{value}\s")
+    output =
+      Enum.map(results, fn data_set ->
+        "\n#{Display.get_display_data_set(data_set)}"
       end)
 
-      IO.puts("\n\n")
-    end)
+    IO.puts("\n********* #{length(results)} matched results! *********#{output}/n")
   end
 end
