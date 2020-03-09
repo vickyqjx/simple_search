@@ -4,6 +4,7 @@ defmodule ZendeskSearch do
   """
 
   alias SearchHelper.UserInput, as: UserInput
+  alias SearchHelper.Search, as: Search
 
   @users_file "data/users.json"
   @tickets_file "data/tickets.json"
@@ -52,12 +53,7 @@ defmodule ZendeskSearch do
 
     prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
 
-    case PerformSearch.search_and_get_results(
-           prepared_data,
-           resource_name,
-           field_name,
-           search_term
-         ) do
+    case Search.search_on_field(prepared_data, field_name, search_term, resource_name) do
       {:ok, rs} -> display_search_results(rs, resource_name)
       _ -> IO.puts(@error_msg_search_results)
     end
