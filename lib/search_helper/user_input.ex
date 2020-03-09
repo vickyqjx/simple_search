@@ -19,8 +19,8 @@ defmodule SearchHelper.UserInput do
   end
 
   def get_input_option(input_index, count, options) do
-    if is_integer(input_index) and input_index >= 1 and input_index <= count do
-      {:ok, Enum.at(options, input_index - 1)}
+    if is_integer(input_index) and input_index >= 0 and input_index <= count - 1 do
+      {:ok, Enum.at(options, input_index)}
     else
       :error
     end
