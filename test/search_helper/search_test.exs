@@ -75,13 +75,14 @@ defmodule SearchHelper.SearchTest do
     assert search_on_field(list, "_id", 1) === {:ok, [item_1]}
     assert search_on_field(list, "_id", "1") === {:ok, [item_1]}
     assert search_on_field(list, "name", "test_2") === {:ok, [item_2]}
+    assert search_on_field(list, "name", "test") === {:ok, [item_1, item_2]}
     assert search_on_field(list, "list", "test_list_3") === {:ok, [item_2]}
     assert search_on_field(list, "active", false) === {:ok, [item_2]}
     assert search_on_field(list, "active", "false") === {:ok, [item_2]}
 
     assert search_on_field(list, "_id", 3) === {:ok, []}
     assert search_on_field(list, "name", "dummy_name") === {:ok, []}
-    assert search_on_field(list, "name", "test") === {:ok, []}
+    assert search_on_field(list, "name", "test_3") === {:ok, []}
   end
 
   test "search on field, return matched results with associated data" do
