@@ -16,12 +16,14 @@ defmodule ZendeskSearch do
   @start_msg "Ready! Please start your search."
 
   @helper_msg_resources "Please select dataset from above to search"
-  @helper_msg_fields "Please select a field above"
-  @helper_msg_term "Please enter the search term:"
+  @helper_msg_fields "Please select a field above in "
+  @helper_msg_term "Please enter the search term for "
 
   @error_msg_invalid "\n\nInvalid input! Please try again!"
 
   @error_msg_search_results "\nSearch error!"
+
+  @no_results_message "\nNo matching results!"
 
   def main(_argv) do
     IO.puts("#{@welcome_msg}\n#{@loading_msg}")
@@ -37,10 +39,16 @@ defmodule ZendeskSearch do
     resource_name =
       UserInput.get_options_input(@resources, @helper_msg_resources, @error_msg_invalid)
 
-    field_name =
-      UserInput.get_options_input(fields[resource_name], @helper_msg_fields, @error_msg_invalid)
+    select_fields_message = "#{@helper_msg_fields}[#{resource_name}]\s"
 
-    search_term = ExPrompt.string(@helper_msg_term)
+    field_name =
+      UserInput.get_options_input(
+        fields[resource_name],
+        select_fields_message,
+        @error_msg_invalid
+      )
+
+    search_term = ExPrompt.string("#{@helper_msg_term}[#{field_name}]:")
 
     prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
 
@@ -50,24 +58,11 @@ defmodule ZendeskSearch do
            field_name,
            search_term
          ) do
-      {:ok, rs} ->
-        IO.puts("--------------------------------------")
-
-        Enum.map(rs, fn data_set ->
-          IO.puts("---------------#{data_set["_id"]}---------------")
-
-          Enum.map(data_set, fn {key, value} ->
-            IO.puts("#{key}:\s#{value}\s")
-          end)
-
-          IO.puts("--------------------------------------")
-        end)
-
-      _ ->
-        IO.puts(@error_msg_search_results)
+      {:ok, rs} -> display_search_results(rs, resource_name)
+      _ -> IO.puts(@error_msg_search_results)
     end
 
-    sure? = ExPrompt.confirm("Continue?")
+    sure? = ExPrompt.confirm("\nContinue?")
 
     if sure?, do: user_input({users, tickets, organizations}, fields), else: IO.puts("\nSee you!")
   end
@@ -91,5 +86,21 @@ defmodule ZendeskSearch do
       {:error, error_message} -> {:error, error_message}
       _ -> {:error, "error.search_and_get_results.other"}
     end
+  end
+
+  def display_search_results(results, _resource_name) when length(results) == 0 do
+    IO.puts(@no_results_message)
+  end
+
+  def display_search_results(results, resource_name) do
+    IO.puts("\n*****#{length(results)} matching results*****")
+
+    Enum.map(results, fn data_set ->
+      Enum.map(data_set, fn {key, value} ->
+        IO.puts("#{key}:\s#{value}\s")
+      end)
+
+      IO.puts("\n\n")
+    end)
   end
 end
