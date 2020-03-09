@@ -40,6 +40,12 @@ defmodule SearchHelper.Search do
   defp item_matches_query?(field_value, search_term) when is_list(field_value),
     do: Enum.member?(field_value, search_term)
 
+  defp item_matches_query?(field_value, search_term) when is_integer(field_value),
+    do: Integer.to_string(field_value) == search_term or field_value == search_term
+
+  defp item_matches_query?(field_value, search_term) when is_boolean(field_value),
+    do: to_string(field_value) == search_term or field_value == search_term
+
   defp item_matches_query?(field_value, search_term), do: field_value == search_term
 
   defp append_associated_data(item, data, "users") do
