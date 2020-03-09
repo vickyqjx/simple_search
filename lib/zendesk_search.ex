@@ -62,7 +62,7 @@ defmodule ZendeskSearch do
     prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
 
     case Search.search_on_field(prepared_data, field_name, search_term, resource_name) do
-      {:ok, rs} -> display_search_results(rs, resource_name)
+      {:ok, rs} -> display_search_results(rs)
       _ -> IO.puts(@error_msg_search_results)
     end
 
@@ -92,11 +92,11 @@ defmodule ZendeskSearch do
     end
   end
 
-  def display_search_results(results, _resource_name) when length(results) == 0 do
+  def display_search_results(results) when length(results) == 0 do
     IO.puts(@no_results_message)
   end
 
-  def display_search_results(results, resource_name) do
+  def display_search_results(results) do
     output =
       Enum.map(results, fn data_set ->
         "\n#{Display.get_display_data_set(data_set)}"
