@@ -12,7 +12,6 @@ defmodule SearchHelper.Display do
 
   def get_display_data_set(data_set) do
     data_set
-    |> format_display_data()
     |> Enum.map(fn {key, value} ->
       display_key =
         key |> String.trim_leading("_") |> String.replace("_", " ") |> String.capitalize()
@@ -20,15 +19,6 @@ defmodule SearchHelper.Display do
       "\n#{display_key}:\s\s#{get_field_value(value)}"
     end)
     |> Enum.join()
-  end
-
-  defp format_display_data(%{"created_at" => created_at} = data) do
-    # DateTime.from_iso8601(created_at)
-    data
-  end
-
-  defp format_display_data(data) do
-    data
   end
 
   defp get_field_value(%{"name" => name, "_id" => id}) do
