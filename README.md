@@ -1,21 +1,47 @@
-# ZendeskSearch
 
-**TODO: Add description**
 
-## Installation
+# Zendesk Search
+This is a zendesk search solution
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `zendesk_search` to your list of dependencies in `mix.exs`:
+## Prerequisite
 
-```elixir
-def deps do
-  [
-    {:zendesk_search, "~> 0.1.0"}
-  ]
-end
+- Erlang ~> 21
+- Elixir ~> 1.8
+
+### How to install Erlang
+Using Homebrew
+```
+brew install erlang
+```
+For other OS: [https://www.erlang.org/downloads](https://www.erlang.org/downloads)
+
+### How to install Elixir
+Using Homebrew
+```
+brew install elixir
+```
+For other OS: [https://elixir-lang.org/install.html](https://elixir-lang.org/install.html)
+## How to Run
+
+**Run under project directory**
+
+Install dependencies:
+```
+mix deps.get
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/zendesk_search](https://hexdocs.pm/zendesk_search).
+Building our executable:
+```
+mix escript.build
+```
 
+Start application:
+```
+./zendesk_search
+```
+
+## Test
+Run test:
+```elixir
+mix test
+```
