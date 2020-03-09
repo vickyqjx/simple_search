@@ -8,7 +8,6 @@ defmodule SearchHelper.UserInputTest do
     options = ["users", "organizations", "tickets"]
 
     assert get_input_option(-1, count, options) === :error
-    assert get_input_option(0, count, options) === :error
     assert get_input_option(9, count, options) === :error
     assert get_input_option("unknown", count, options) === :error
 
