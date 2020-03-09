@@ -14,7 +14,9 @@ defmodule SearchHelper.Display do
     data_set
     |> format_display_data()
     |> Enum.map(fn {key, value} ->
-      display_key = key |> String.trim_leading("_") |> String.capitalize()
+      display_key =
+        key |> String.trim_leading("_") |> String.replace("_", " ") |> String.capitalize()
+
       "\n#{display_key}:\s\s#{get_field_value(value)}"
     end)
     |> Enum.join()
@@ -34,7 +36,14 @@ defmodule SearchHelper.Display do
   end
 
   defp get_field_value(value) when is_list(value) do
-    "#{Enum.join(value, ",")}"
+    Enum.map(value, fn v ->
+      if is_map(v) do
+        "\n\s\s-\s#{v["name"]}\s(ID:#{v["_id"]})"
+      else
+        v
+      end
+    end)
+    |> Enum.join(",")
   end
 
   defp get_field_value(value) do
