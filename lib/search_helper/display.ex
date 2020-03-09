@@ -38,7 +38,7 @@ defmodule SearchHelper.Display do
   defp get_field_value(value) when is_list(value) do
     Enum.map(value, fn v ->
       if is_map(v) do
-        "\n\s\s-\s#{v["name"]}\s(ID:#{v["_id"]})"
+        "\n\s\s-\s#{v["name"] || v["subject"]}\s(ID:#{v["_id"]})"
       else
         v
       end

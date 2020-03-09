@@ -46,6 +46,9 @@ defmodule SearchHelper.Search do
   defp item_matches_query?(field_value, search_term) when is_boolean(field_value),
     do: to_string(field_value) == search_term or field_value == search_term
 
+  defp item_matches_query?(field_value, search_term) when is_bitstring(field_value),
+    do: String.downcase(field_value) == String.downcase(search_term)
+
   defp item_matches_query?(field_value, search_term), do: field_value == search_term
 
   defp append_associated_data(
