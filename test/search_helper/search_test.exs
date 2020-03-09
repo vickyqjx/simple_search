@@ -29,12 +29,14 @@ defmodule SearchHelper.SearchTest do
 
   @user_1 %{
     "_id" => 71,
-    "name" => "User 1"
+    "name" => "User 1",
+    "organization_id" => 112
   }
 
-  @user_1 %{
+  @user_2 %{
     "_id" => 38,
-    "name" => "User 2"
+    "name" => "User 2",
+    "organization_id" => 111
   }
 
   @organization_1 %{
@@ -84,6 +86,25 @@ defmodule SearchHelper.SearchTest do
 
   test "search on field, return matched results with associated data" do
     assert search_on_field(@data, "priority", "high", "tickets") ===
-             {:ok, [Map.put(@ticket_2, "organization", @organization_1)]}
+             {:ok,
+              [
+                @ticket_2
+                |> Map.put("organization", @organization_1)
+                |> Map.put("submitter", @user_1)
+                |> Map.drop(["organization_id", "submitter_id"])
+              ]}
+
+    assert search_on_field(@data, "name", "organization 2", "organizations") ===
+             {:ok, [Map.put(@organization_2, "users", [@user_2])]}
+
+    rs_users = [
+      @user_1
+      |> Map.put("submitted_tickets", [@ticket_2])
+      |> Map.put("organization", @organization_1)
+      |> Map.drop(["organization_id"])
+    ]
+
+    assert search_on_field(@data, "name", "User 1", "users") ===
+             {:ok, rs_users}
   end
 end
