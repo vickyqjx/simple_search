@@ -3,65 +3,67 @@ defmodule ZendeskSearch do
   Documentation for ZendeskSearch.
   """
 
+  alias SearchHelper.UserInput, as: UserInput
+
   @users_file "data/users.json"
   @tickets_file "data/tickets.json"
   @organizations_file "data/organizations.json"
 
-  @resources ["users", "organizations", "tickets"]
+  @welcome_msg "*** Welcome to Zendesk Search! ***\n"
+  @loading_msg "Please wait while your data is loading...\n"
+  @start_msg "Ready! Please start your search."
+
+  @error_msg_search_results "\nSearch error!"
 
   def main(_argv) do
-    IO.puts("""
-    Loading data
-    """)
+    IO.puts("#{@welcome_msg}\n#{@loading_msg}")
 
-    {:ok, [users, tickets, organizations, fields]} = load_data()
+    {:ok, [users, tickets, organizations, fields]} =
+      load_data([@users_file, @tickets_file, @organizations_file])
 
-    user_input(users, tickets, organizations, fields)
+    IO.puts(@start_msg)
+    user_input({users, tickets, organizations}, fields)
   end
 
-  def user_input(users, tickets, organizations, fields) do
-    resource_index =
-      ExPrompt.choose("Which one you want to search", ~w(Users Organizations Tickets))
+  def user_input({users, tickets, organizations}, fields) do
+    resource_name = UserInput.get_user_input(:resource_name)
+    field_name = UserInput.get_user_input(:field_name, fields[resource_name])
+    search_term = UserInput.get_user_input(:search_term)
 
-    resource = Enum.at(@resources, resource_index)
+    prepared_data = %{"users" => users, "tickets" => tickets, "organizations" => organizations}
 
-    IO.puts("""
-    PERFECT!
-    Your name is `#{resource}``
-    """)
+    case PerformSearch.search_and_get_results(
+           prepared_data,
+           resource_name,
+           field_name,
+           search_term
+         ) do
+      {:ok, rs} ->
+        IO.puts("--------------------------------------")
 
-    field_index = ExPrompt.choose("Which one you want to search", fields[resource])
-    field = Enum.at(fields[resource], field_index)
+        Enum.map(rs, fn data_set ->
+          IO.puts("---------------#{data_set["_id"]}---------------")
 
-    search_term = ExPrompt.string_required("Search for?\s")
+          Enum.map(data_set, fn {key, value} ->
+            IO.puts("#{key}:\s#{value}\s")
+          end)
 
-    {:ok, rs} =
-      PerformSearch.search_and_get_results(
-        %{"users" => users, "tickets" => tickets, "organizations" => organizations},
-        resource,
-        field,
-        search_term
-      )
+          IO.puts("--------------------------------------")
+        end)
 
-    Enum.map(rs, fn data_set ->
-      IO.puts("---------------#{data_set["_id"]}---------------")
-
-      Enum.map(data_set, fn {key, value} ->
-        IO.puts("#{key}:\s#{value}\s")
-      end)
-
-      IO.puts("--------------------------------------")
-    end)
+      _ ->
+        IO.puts(@error_msg_search_results)
+    end
 
     sure? = ExPrompt.confirm("Continue?")
 
-    if sure?, do: user_input(users, tickets, organizations, fields), else: IO.puts("\nSee you!")
+    if sure?, do: user_input({users, tickets, organizations}, fields), else: IO.puts("\nSee you!")
   end
 
-  def load_data() do
-    with {:ok, users} <- Utility.JsonParser.parse_json(@users_file),
-         {:ok, tickets} <- Utility.JsonParser.parse_json(@tickets_file),
-         {:ok, organizations} <- Utility.JsonParser.parse_json(@organizations_file) do
+  def load_data([users_file, tickets_file, organizations_file]) do
+    with {:ok, users} <- Utility.JsonParser.parse_json(users_file),
+         {:ok, tickets} <- Utility.JsonParser.parse_json(tickets_file),
+         {:ok, organizations} <- Utility.JsonParser.parse_json(organizations_file) do
       {:ok,
        [
          users,
