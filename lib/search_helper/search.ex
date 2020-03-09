@@ -9,7 +9,7 @@ defmodule SearchHelper.Search do
   @spec search_on_field(map, String.t(), String.t() | Integer | Boolean, String.t()) ::
           {:ok, list}
   def search_on_field(
-        %{"users" => users, "tickets" => tickets, "organizations" => organizations} = data,
+        data,
         field_name,
         search_term,
         resource_name
@@ -20,7 +20,7 @@ defmodule SearchHelper.Search do
       |> Enum.map(fn item ->
         item
         |> append_associated_data(data, resource_name)
-        |> Enum.filter(fn {k, value} -> value !== nil && value !== [] end)
+        |> Enum.filter(fn {_k, value} -> value !== nil && value !== [] end)
         |> Enum.into(%{})
       end)
 
@@ -47,13 +47,15 @@ defmodule SearchHelper.Search do
     do: to_string(field_value) == search_term or field_value == search_term
 
   defp item_matches_query?(field_value, search_term) when is_bitstring(field_value),
-    do: String.downcase(field_value) == String.downcase(search_term)
+    do:
+      String.downcase(field_value) == String.downcase(search_term) ||
+        String.contains?(String.downcase(field_value), String.downcase(search_term))
 
   defp item_matches_query?(field_value, search_term), do: field_value == search_term
 
   defp append_associated_data(
          item,
-         %{"tickets" => tickets, "organizations" => organizations} = data,
+         %{"tickets" => tickets, "organizations" => organizations} = _data,
          "users"
        ) do
     item
@@ -71,7 +73,7 @@ defmodule SearchHelper.Search do
 
   defp append_associated_data(
          item,
-         %{"users" => users, "organizations" => organizations} = data,
+         %{"users" => users, "organizations" => organizations} = _data,
          "tickets"
        ) do
     item
@@ -83,7 +85,7 @@ defmodule SearchHelper.Search do
 
   defp append_associated_data(
          item,
-         %{"tickets" => tickets, "users" => users} = data,
+         %{"tickets" => tickets, "users" => users} = _data,
          "organizations"
        ) do
     item
